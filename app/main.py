@@ -3,7 +3,7 @@ import shutil
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-
+import json
 from fastapi import FastAPI, Depends, HTTPException, status, Header, Request, Query, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -98,7 +98,7 @@ async def create_tus_upload_session(
         "filename": raw_filename,
         "total_size": upload_length,
         "temp_chunk_path": temp_chunk_path,
-        "metadata": str(metadata),
+        "metadata": json.dumps(metadata),
         "expires_at": expires_at
     })
     await db.commit()
