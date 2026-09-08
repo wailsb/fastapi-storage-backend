@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: storage_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: storage_admin
+      POSTGRES_PASSWORD: storage_password_123
+      POSTGRES_DB: cloud_storage_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations/001_initial_schema.sql:/docker-entrypoint-initdb.d/001_initial_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U storage_admin -d cloud_storage_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: storage_fastapi
+    restart: always
+    environment:
+      DATABASE_URL: postgresql+asyncpg://storage_admin:storage_password_123@db:5432/cloud_storage_db
+      JWT_SECRET: super_secret_jwt_key_change_in_prod
+      JWT_ALGORITHM: HS256
+      UPLOAD_DIR: /tmp/uploads
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      - upload_cache:/tmp/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  upload_cache:
