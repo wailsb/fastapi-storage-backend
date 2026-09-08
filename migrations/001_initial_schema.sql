@@ -80,6 +80,6 @@ INSERT INTO users (username, email, hashed_password, is_admin)
 VALUES (
     'admin',
     'admin@storage.local',
-    '$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW',
+    '$2a$12$coAA3PUvHQqSuZOPO4FwROX6NBYyFMvFQ6cSnaH1NZjcoKaeOif4S',
     TRUE
 ) ON CONFLICT (email) DO NOTHING;
