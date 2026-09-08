@@ -25,12 +25,14 @@ services:
     container_name: storage_fastapi
     restart: always
     environment:
+      ENVIRONMENT: dev
       DATABASE_URL: postgresql+asyncpg://storage_admin:storage_password_123@db:5432/cloud_storage_db
-      JWT_SECRET: super_secret_jwt_key_change_in_prod
+      JWT_SECRET: super_secret_jwt_key_dev_test_2026
       JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 120
       UPLOAD_DIR: /tmp/uploads
     ports:
-      - "8000:8000"
+      - "8080:8000"
     volumes:
       - ./app:/app/app
       - upload_cache:/tmp/uploads
